@@ -1,22 +1,31 @@
 $(document).ready(function(){
     var API_KEY = "AIzaSyAYUJirQE2io-hjqAce9IJCQw9D-F6aFNk";   
 
-    $("#form").submit(function (event) {
-        event.preventDefault();
+    $(".category-button").click(function () {
+        $(this).toggleClass("selected");
+        var categoryKeyword = $(this).data("category");
+        var $searchInput = $("#search");
+        if ($(this).hasClass("selected")) {
+            $searchInput.val(categoryKeyword);
+        } else {
+            $searchInput.val("");
+        }
+    });
+
+    $("#search-button").click(function () {
         var search = $("#search").val();
         var videoDuration = "short";
         videoSearch(API_KEY, search, 12, videoDuration);
-    })
+    });
 
     function videoSearch(key, search, maxResults, videoDuration) {
-
-        $("#videos").empty()
+        $("#videos").empty();
         $.get("https://www.googleapis.com/youtube/v3/search?key=" + key
         + "&type=video&part=snippet&maxResults=" + maxResults + "&q=" + search + "&videoDuration=" + videoDuration, 
         function(data){
             var videosContainer = $("<div class='row'></div>");
             console.log(data);
-            data.items.forEach(item => {
+            data.items.forEach(function (item, index) {
                 var videoColumn = $("<div class='col-md-4'></div>");
                 var videoContainer = $("<div class='video-container'></div>");
         
@@ -34,11 +43,15 @@ $(document).ready(function(){
                 videoColumn.append(videoContainer);
                 videosContainer.append(videoColumn);
         
-                if (data.items.indexOf(item) % 3 === 2) {
+                if ((index + 1) % 3 === 0) {
                     $("#videos").append(videosContainer);
                     videosContainer = $("<div class='row'></div>");
                 }
-            })
+            });
+
+            if (videosContainer.children().length > 0){
+                $("#videos").append(videosContainer);
+            }
         })
     }
 
@@ -63,5 +76,33 @@ $(document).ready(function(){
             closeVideo();
         }
     }
+
+    $("#addKeywordButton").click(function (){
+        $("#keywordPopup").css("display", "block");
+    });
+
+    $("#cancelKeyword").click(function (){
+        $("#keywordPopup").css("display", "none");
+    });
+
+    $("#submitKeyword").click(function () {
+        var customKeyword = $("#customKeyword").val();
+        if (customKeyword.trim() !== "") {
+            var newCategoryButton = $("<button class='category-button' data-category='" + customKeyword + "'>" + customKeyword + "</button>");
+            newCategoryButton.click(function () {
+                $(this).toggleClass("selected");
+                var $searchInput = $("#search");
+                if ($(this).hasClass("selected")) {
+                    $searchInput.val(customKeyword);
+                } else {
+                    $searchInput.val("");
+                }
+            });
+
+            $(".category-buttons").append(newCategoryButton);
+            $("#customKeyword").val("");
+            $("#keywordPopup").css("display", "none");
+        }
+    })
 });
 
