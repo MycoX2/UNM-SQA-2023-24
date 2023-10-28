@@ -1,12 +1,21 @@
 $(document).ready(function(){
     var API_KEY = "AIzaSyAYUJirQE2io-hjqAce9IJCQw9D-F6aFNk";   
+    var selectedCategories = [];
 
     $(".category-button").click(function () {
         $(this).toggleClass("selected");
         var categoryKeyword = $(this).data("category");
         var $searchInput = $("#search");
+        
         if ($(this).hasClass("selected")) {
-            $searchInput.val(categoryKeyword);
+           selectedCategories.push(categoryKeyword);
+        } else {
+            selectedCategories = selectedCategories.filter(item => item !== categoryKeyword);
+        }
+
+        var combinedCategories = selectedCategories.join(" ");
+        if (combinedCategories !== "") {
+            $searchInput.val(combinedCategories);
         } else {
             $searchInput.val("");
         }
