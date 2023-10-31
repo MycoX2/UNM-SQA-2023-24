@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YouTube API</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+    </head>
+    <body>
+        <div class="container">
+            <br>
+            <h1>YouTube API Search</h1>
+        
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="Search for videos">
+                <button id="search-button">Search</button>
+                <button id="addKeywordButton" class="add-button">+</button>
+            </div>
+
+            <div id="keywordPopup" class="popup" style="display: none;">
+                <br>
+                <input type="text" id="customKeyword" placeholder="Enter custom keyword">
+                <button id="submitKeyword">Submit</button>
+                <button id="cancelKeyword">Cancel</button>
+            </div>
+        
+            <div class="category-buttons">
+                <button class="category-button" data-category="Software Quality Assurance">Software Quality Assurance</button>
+                <button class="category-button" data-category="Computing">Computing</button>
+            </div>
+        
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="videos"></div>
+                </div>
+            </div>
+        </div>
+       
+        <div id="loading" style="display: none">
+            <p>Loading...</p>
+        </div>
+
+        <div id="error" style="display:none">
+            <p>An error occurred while fetching videos.</p>
+        </div>
+
+        <div id="videoScreen" class="screen">
+            <div class="screen-content">
+                <span class="close" onclick="closeVideo()">&times;</span>
+                <iframe id="videoFrame" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
+				<div id="fb-root"></div>
+				<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v18.0" nonce="wykFjTT7"></script>
+				<input type = "image" style="width:60px;height:60px;" src = "save.png" onclick = "openNW()" id = "download"></button>
+				<input type="image" style="width:60px;height:60px;" src = "2023_Facebook_icon.png" onclick="location.href='https://www.facebook.com/sharer/sharer.php?u=example.org';" id = "fb-share" /></button>
+				<a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Hello%20world"><img src="X.png" width="60px" height="60px"></a>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="ytsearch.js"></script>
+		<script src = "script.js"></script>
+    </body>
+</html>
