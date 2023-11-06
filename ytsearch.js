@@ -146,5 +146,7 @@ $(document).ready(function(){
             $(".custom-category-button").remove(); // Remove custom buttons from the DOM
             selectedCategories.clear(); // Clear the selectedCategories set
             updateSearchInput();
+
+            location.reload();
         });
     });
