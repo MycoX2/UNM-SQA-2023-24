@@ -107,6 +107,9 @@ function saveNoteChanges(note, noteTextElement, editButton) {
     // If the note text is empty, remove the note and timestamp
     removeNoteAndTimestamp(note);
   } else {
+    // Remove the note with the specific ID from local storage
+    removeNoteById(note.id);
+
     // Update the note's text with the content of the textarea
     note.text = noteTextElement.value;
 
@@ -126,6 +129,14 @@ function saveNoteChanges(note, noteTextElement, editButton) {
   editButton.addEventListener("click", () =>
     enableNoteEditing(note, noteTextElement, editButton)
   );
+}
+
+// Function to remove a note by its ID
+function removeNoteById(noteId) {
+  const key = `notes_${currentVideoId}`;
+  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
+  const updatedNotes = existingNotes.filter((n) => n.id !== noteId);
+  localStorage.setItem(key, JSON.stringify(updatedNotes));
 }
 
 // Function to enable editing for a note
@@ -216,23 +227,13 @@ function onPlayerReady(event) {
 }
 
 // Function to save a note to local storage
+// Function to save a note to local storage
 function saveNoteToLocalStorage(note) {
   const key = `notes_${note.videoId}`;
   const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
-  const updatedNotes = existingNotes.filter(
-    (n) => n.timestamp !== note.timestamp
-  );
+  const updatedNotes = existingNotes.filter((n) => n.id !== note.id);
+  updatedNotes.push(note); // Add the updated note
   localStorage.setItem(key, JSON.stringify(updatedNotes));
-}
-
-function removeNoteAndTimestamp(note) {
-  const key = `notes_${note.videoId}`;
-  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
-  const updatedNotes = existingNotes.filter(
-    (n) => n.timestamp !== note.timestamp
-  );
-  localStorage.setItem(key, JSON.stringify(updatedNotes));
-  loadNotesForVideo(note.videoId); // Reload notes after removing
 }
 
 // Function to load notes for a video from local storage
@@ -241,6 +242,15 @@ function loadNotesForVideo(videoId) {
   const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
   notesList.innerHTML = ""; // Clear existing notes
   existingNotes.forEach((note) => displayNoteInList(note));
+}
+function removeNoteAndTimestamp(note) {
+  const key = `notes_${note.videoId}`;
+  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
+  const updatedNotes = existingNotes.filter(
+    (n) => n.timestamp !== note.timestamp
+  );
+  localStorage.setItem(key, JSON.stringify(updatedNotes));
+  loadNotesForVideo(note.videoId); // Reload notes after removing
 }
 
 // Function to add a unique ID to a note
