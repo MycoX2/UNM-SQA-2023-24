@@ -51,6 +51,7 @@ addNoteButton.addEventListener("click", () => {
     text: text,
   };
 
+  addUniqueIdToNote(note); // Add unique ID to the note
   displayNoteInList(note);
   saveNoteToLocalStorage(note);
 
@@ -66,7 +67,6 @@ loadVideoButton.addEventListener("click", () => {
   }
 });
 
-// Function to display a note in the notes list
 function displayNoteInList(note) {
   const timestampInSeconds = note.timestamp;
   const minutes = Math.floor(timestampInSeconds / 60);
@@ -74,15 +74,112 @@ function displayNoteInList(note) {
 
   const timestamp = `${padNumber(minutes)}:${padNumber(seconds)}`;
   const listItem = document.createElement("li");
-  listItem.textContent = `${timestamp}: ${note.text}`;
+
+  // Create a div to hold the note content and edit controls
+  const noteContainer = document.createElement("div");
+
+  // Display the timestamp and note text
+  const timestampElement = document.createElement("span");
+  timestampElement.textContent = timestamp;
+
+  // Create an editable textarea for the note text
+  const noteTextElement = document.createElement("textarea");
+  noteTextElement.value = note.text;
 
   // Add an "Edit" button for each note
   const editButton = document.createElement("button");
-  editButton.textContent = "Edit";
-  editButton.addEventListener("click", () => editNote(note));
-  listItem.appendChild(editButton);
+  editButton.textContent = "Save";
+  editButton.addEventListener("click", () =>
+    saveNoteChanges(note, noteTextElement, editButton)
+  );
 
+  noteContainer.appendChild(timestampElement);
+  noteContainer.appendChild(noteTextElement);
+  noteContainer.appendChild(editButton);
+
+  listItem.appendChild(noteContainer);
   notesList.appendChild(listItem);
+}
+
+// Function to save the changes made to a note
+function saveNoteChanges(note, noteTextElement, editButton) {
+  if (noteTextElement.value.trim() === "") {
+    // If the note text is empty, remove the note and timestamp
+    removeNoteAndTimestamp(note);
+  } else {
+    // Update the note's text with the content of the textarea
+    note.text = noteTextElement.value;
+
+    // Save the updated note to local storage
+    saveNoteToLocalStorage(note);
+  }
+
+  // Reload the notes for the current video to reflect changes
+  loadNotesForVideo(currentVideoId);
+
+  // Disable the textarea and hide the "Save" button
+  noteTextElement.disabled = true;
+  editButton.textContent = "Edit";
+  editButton.removeEventListener("click", () =>
+    saveNoteChanges(note, noteTextElement, editButton)
+  );
+  editButton.addEventListener("click", () =>
+    enableNoteEditing(note, noteTextElement, editButton)
+  );
+}
+
+// Function to enable editing for a note
+function enableNoteEditing(note, noteTextElement, editButton) {
+  // Enable the textarea for editing
+  noteTextElement.disabled = false;
+
+  // Change the "Edit" button to "Save"
+  editButton.textContent = "Save";
+
+  // Remove the enableNoteEditing event listener
+  editButton.removeEventListener("click", () =>
+    enableNoteEditing(note, noteTextElement, editButton)
+  );
+
+  // Add the saveNoteChanges event listener
+  editButton.addEventListener("click", () =>
+    saveNoteChanges(note, noteTextElement, editButton)
+  );
+
+  // Focus on the textarea
+  noteTextElement.focus();
+}
+
+// Function to edit a note and copy it to the clipboard
+function editNoteAndCopyToClipboard(note) {
+  const newText = prompt("Edit the note:", note.text);
+
+  if (newText !== null) {
+    // Update the note's text
+    note.text = newText;
+
+    // Save the updated note to local storage
+    saveNoteToLocalStorage(note);
+
+    // Reload the notes for the current video to reflect changes
+    loadNotesForVideo(currentVideoId);
+
+    // Copy the updated note text to the clipboard
+    copyTextToClipboard(note.text);
+  }
+}
+
+// Function to copy text to the clipboard
+function copyTextToClipboard(text) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  document.body.appendChild(textArea);
+  textArea.select();
+  document.execCommand("copy");
+  document.body.removeChild(textArea);
+
+  // You can provide some user feedback that the text has been copied, for example:
+  alert("Note text has been copied to the clipboard!");
 }
 
 // Function to pad a number with leading zeros
@@ -125,8 +222,17 @@ function saveNoteToLocalStorage(note) {
   const updatedNotes = existingNotes.filter(
     (n) => n.timestamp !== note.timestamp
   );
-  updatedNotes.push(note);
   localStorage.setItem(key, JSON.stringify(updatedNotes));
+}
+
+function removeNoteAndTimestamp(note) {
+  const key = `notes_${note.videoId}`;
+  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
+  const updatedNotes = existingNotes.filter(
+    (n) => n.timestamp !== note.timestamp
+  );
+  localStorage.setItem(key, JSON.stringify(updatedNotes));
+  loadNotesForVideo(note.videoId); // Reload notes after removing
 }
 
 // Function to load notes for a video from local storage
@@ -137,18 +243,7 @@ function loadNotesForVideo(videoId) {
   existingNotes.forEach((note) => displayNoteInList(note));
 }
 
-// Function to edit a note
-function editNote(note) {
-  const newText = prompt("Edit the note:", note.text);
-
-  if (newText !== null) {
-    // Update the note's text
-    note.text = newText;
-
-    // Save the updated note to local storage
-    saveNoteToLocalStorage(note);
-
-    // Reload the notes for the current video to reflect changes
-    loadNotesForVideo(currentVideoId);
-  }
+// Function to add a unique ID to a note
+function addUniqueIdToNote(note) {
+  note.id = Date.now().toString();
 }
