@@ -5,6 +5,7 @@ const videoSelector = document.getElementById("video-selector");
 const loadVideoButton = document.getElementById("load-video");
 let currentVideoId = null;
 let player;
+let highlightInterval;
 
 // Function to fetch YouTube videos based on a query
 function fetchYouTubeVideos() {
@@ -51,7 +52,7 @@ addNoteButton.addEventListener("click", () => {
     text: text,
   };
 
-  addUniqueIdToNote(note); // Add unique ID to the note
+  addUniqueIdToNote(note); // Add a unique ID to the note
   displayNoteInList(note);
   saveNoteToLocalStorage(note);
 
@@ -67,6 +68,62 @@ loadVideoButton.addEventListener("click", () => {
   }
 });
 
+// Function to load notes for a video from local storage
+function loadNotesForVideo(videoId) {
+  const key = `notes_${videoId}`;
+  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
+  notesList.innerHTML = ""; // Clear existing notes
+
+  // Get the current timestamp of the video
+  const currentTimestamp = player.getCurrentTime();
+
+  existingNotes.forEach((note) => {
+    displayNoteInList(note);
+
+    // Compare the timestamp of each note with the current timestamp of the video
+    if (
+      currentTimestamp >= note.timestamp &&
+      currentTimestamp < note.timestamp + 10
+    ) {
+      // Highlight or indicate the relevant note
+      highlightNoteInList(note);
+    }
+  });
+}
+
+// Function to highlight the relevant note in the list
+function highlightNoteInList(note) {
+  // Customize this function based on how you want to highlight the note
+  const listItem = notesList.querySelector(`[data-note-id="${note.id}"]`);
+  if (listItem) {
+    listItem.style.backgroundColor = "yellow"; // Change the background color as an example
+    listItem.scrollIntoView({ behavior: "smooth", block: "center" }); // Scroll to the highlighted note
+    setTimeout(() => {
+      listItem.style.backgroundColor = ""; // Remove the background color
+    }, 5000); // Adjust the time as needed (5 seconds in this example)
+  }
+}
+
+// Function to highlight the note at the current time
+function highlightNoteAtCurrentTime() {
+  const currentTimestamp = player.getCurrentTime();
+
+  // Iterate through all notes and highlight the one at the current timestamp
+  const key = `notes_${currentVideoId}`;
+  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
+
+  existingNotes.forEach((note) => {
+    const noteStart = note.timestamp;
+    const noteEnd = note.timestamp + 5; // Assuming notes are valid for a 5-second window
+
+    if (currentTimestamp >= noteStart && currentTimestamp < noteEnd) {
+      // Highlight the note
+      highlightNoteInList(note);
+    }
+  });
+}
+
+// Function to display a note in the list
 function displayNoteInList(note) {
   const timestampInSeconds = note.timestamp;
   const minutes = Math.floor(timestampInSeconds / 60);
@@ -74,6 +131,7 @@ function displayNoteInList(note) {
 
   const timestamp = `${padNumber(minutes)}:${padNumber(seconds)}`;
   const listItem = document.createElement("li");
+  listItem.setAttribute("data-note-id", note.id);
 
   // Create a div to hold the note content and edit controls
   const noteContainer = document.createElement("div");
@@ -86,23 +144,23 @@ function displayNoteInList(note) {
   const noteTextElement = document.createElement("textarea");
   noteTextElement.value = note.text;
 
-  // Add an "Edit" button for each note
-  const editButton = document.createElement("button");
-  editButton.textContent = "Save";
-  editButton.addEventListener("click", () =>
-    saveNoteChanges(note, noteTextElement, editButton)
+  // Add a "Save" button for each note
+  const saveButton = document.createElement("button");
+  saveButton.textContent = "Save";
+  saveButton.addEventListener("click", () =>
+    saveNoteChanges(note, noteTextElement, saveButton)
   );
 
   noteContainer.appendChild(timestampElement);
   noteContainer.appendChild(noteTextElement);
-  noteContainer.appendChild(editButton);
+  noteContainer.appendChild(saveButton);
 
   listItem.appendChild(noteContainer);
   notesList.appendChild(listItem);
 }
 
 // Function to save the changes made to a note
-function saveNoteChanges(note, noteTextElement, editButton) {
+function saveNoteChanges(note, noteTextElement, saveButton) {
   if (noteTextElement.value.trim() === "") {
     // If the note text is empty, remove the note and timestamp
     removeNoteAndTimestamp(note);
@@ -122,12 +180,12 @@ function saveNoteChanges(note, noteTextElement, editButton) {
 
   // Disable the textarea and hide the "Save" button
   noteTextElement.disabled = true;
-  editButton.textContent = "Edit";
-  editButton.removeEventListener("click", () =>
-    saveNoteChanges(note, noteTextElement, editButton)
+  saveButton.textContent = "Edit";
+  saveButton.removeEventListener("click", () =>
+    saveNoteChanges(note, noteTextElement, saveButton)
   );
-  editButton.addEventListener("click", () =>
-    enableNoteEditing(note, noteTextElement, editButton)
+  saveButton.addEventListener("click", () =>
+    enableNoteEditing(note, noteTextElement, saveButton)
   );
 }
 
@@ -140,57 +198,41 @@ function removeNoteById(noteId) {
 }
 
 // Function to enable editing for a note
-function enableNoteEditing(note, noteTextElement, editButton) {
+function enableNoteEditing(note, noteTextElement, saveButton) {
   // Enable the textarea for editing
   noteTextElement.disabled = false;
 
   // Change the "Edit" button to "Save"
-  editButton.textContent = "Save";
+  saveButton.textContent = "Save";
 
   // Remove the enableNoteEditing event listener
-  editButton.removeEventListener("click", () =>
-    enableNoteEditing(note, noteTextElement, editButton)
+  saveButton.removeEventListener("click", () =>
+    enableNoteEditing(note, noteTextElement, saveButton)
   );
 
   // Add the saveNoteChanges event listener
-  editButton.addEventListener("click", () =>
-    saveNoteChanges(note, noteTextElement, editButton)
+  saveButton.addEventListener("click", () =>
+    saveNoteChanges(note, noteTextElement, saveButton)
   );
 
   // Focus on the textarea
   noteTextElement.focus();
 }
 
-// Function to edit a note and copy it to the clipboard
-function editNoteAndCopyToClipboard(note) {
-  const newText = prompt("Edit the note:", note.text);
-
-  if (newText !== null) {
-    // Update the note's text
-    note.text = newText;
-
-    // Save the updated note to local storage
-    saveNoteToLocalStorage(note);
-
-    // Reload the notes for the current video to reflect changes
-    loadNotesForVideo(currentVideoId);
-
-    // Copy the updated note text to the clipboard
-    copyTextToClipboard(note.text);
-  }
+// Function to remove a note and its timestamp
+function removeNoteAndTimestamp(note) {
+  const key = `notes_${note.videoId}`;
+  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
+  const updatedNotes = existingNotes.filter(
+    (n) => n.timestamp !== note.timestamp
+  );
+  localStorage.setItem(key, JSON.stringify(updatedNotes));
+  loadNotesForVideo(note.videoId); // Reload notes after removing
 }
 
-// Function to copy text to the clipboard
-function copyTextToClipboard(text) {
-  const textArea = document.createElement("textarea");
-  textArea.value = text;
-  document.body.appendChild(textArea);
-  textArea.select();
-  document.execCommand("copy");
-  document.body.removeChild(textArea);
-
-  // You can provide some user feedback that the text has been copied, for example:
-  alert("Note text has been copied to the clipboard!");
+// Function to add a unique ID to a note
+function addUniqueIdToNote(note) {
+  note.id = Date.now().toString();
 }
 
 // Function to pad a number with leading zeros
@@ -203,6 +245,8 @@ function loadYouTubeVideo(videoId) {
   if (player) {
     player.loadVideoById(videoId);
     currentVideoId = videoId;
+    player.removeEventListener("onStateChange", onPlayerStateChange);
+    player.addEventListener("onStateChange", onPlayerStateChange);
   }
 }
 
@@ -226,7 +270,27 @@ function onPlayerReady(event) {
   fetchYouTubeVideos();
 }
 
-// Function to save a note to local storage
+// Function called when the YouTube player state changes
+function onPlayerStateChange(event) {
+  // Check if the player is playing or replaying
+  if (
+    event.data === YT.PlayerState.PLAYING ||
+    event.data === YT.PlayerState.PLAYBACK_RATE_CHANGE
+  ) {
+    startHighlighting();
+  } else {
+    stopHighlighting();
+  }
+}
+
+// Function to start highlighting notes at the current time
+function startHighlighting() {
+  // Set up the interval to check and highlight notes
+  highlightInterval = setInterval(() => {
+    highlightNoteAtCurrentTime();
+  }, 2); // Check every second (adjust as needed)
+}
+
 // Function to save a note to local storage
 function saveNoteToLocalStorage(note) {
   const key = `notes_${note.videoId}`;
@@ -236,24 +300,10 @@ function saveNoteToLocalStorage(note) {
   localStorage.setItem(key, JSON.stringify(updatedNotes));
 }
 
-// Function to load notes for a video from local storage
-function loadNotesForVideo(videoId) {
-  const key = `notes_${videoId}`;
-  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
-  notesList.innerHTML = ""; // Clear existing notes
-  existingNotes.forEach((note) => displayNoteInList(note));
-}
-function removeNoteAndTimestamp(note) {
-  const key = `notes_${note.videoId}`;
-  const existingNotes = JSON.parse(localStorage.getItem(key)) || [];
-  const updatedNotes = existingNotes.filter(
-    (n) => n.timestamp !== note.timestamp
-  );
-  localStorage.setItem(key, JSON.stringify(updatedNotes));
-  loadNotesForVideo(note.videoId); // Reload notes after removing
-}
-
-// Function to add a unique ID to a note
-function addUniqueIdToNote(note) {
-  note.id = Date.now().toString();
-}
+// Event listener for loading a selected video
+loadVideoButton.addEventListener("click", () => {
+  const selectedVideoId = videoSelector.value;
+  if (selectedVideoId) {
+    loadYouTubeVideo(selectedVideoId);
+  }
+});
