@@ -1,4 +1,12 @@
+body {
+    background: linear-gradient(to bottom right, rgb(230, 230, 250), rgb(128, 0, 128)); /* Adjust the colors as needed */
+    background-attachment: fixed; /* Keeps the gradient in place */
+}
+
 .search-bar {
+	position: absolute;
+	left: 35%;
+	top: 2%;
     margin-top: 20px;
     display: flex;
     border-radius: 25px;
@@ -7,28 +15,33 @@
 #search {
     flex: 1;
     max-width: 400px;
-    padding: 10px;
+    padding: 8px 16px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 16px 0px 0px 16px;
     font-size: 16px;
 }
 
 #search-button {
     background-color: #007bff;
+	width:50px;
+	height:50px;
     color: #fff;
-    padding: 10px 16px;
+	padding: 14px 14px;
     border: none;
-    border-radius: 4px;
+    border-radius: 0px 8px 8px 0px;
     cursor: pointer;
     transition: background-color 0.3s;
 }
 
 #search-button:hover {
-    background-color: #0055cc;
+
 }
 
 .category-buttons {
-    display: flex;
+	position: absolute;
+	left: 65%;
+	top: 4%;
+    display: inline-block;
     gap: 10px;
     margin-top: 10px;
 }
@@ -56,6 +69,10 @@
     text-align: center;
 }
 
+.video-container img{
+    border-radius: 16px;
+}
+
 .video-title {
     font-weight: bold;
 }
@@ -74,7 +91,7 @@
 .screen-content {
     position: absolute;
     top: 50%;
-    left: 50%;
+    left: 30%;
     transform: translate(-50%, -50%);
     background-color: #fff;
     padding: 20px;
@@ -86,6 +103,12 @@
     right: 1px;
     font-size: 28px;
     cursor: pointer;
+}
+
+.addKeyword {
+	position: absolute;
+	left: 58%;
+	top: 5%;
 }
 
 .add-button {
@@ -106,4 +129,14 @@
 .add-button:hover {
     background-color: #0055cc;
 }
+
+#note-container {
+	background-color: #fff;
+	position: absolute;
+	top: 2%;
+	left: 54%;
+	height: 500px;
+	width: 500px;
+}
+
 

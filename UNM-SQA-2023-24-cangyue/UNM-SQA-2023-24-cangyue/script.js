@@ -9,10 +9,11 @@ let highlightInterval;
 
 // Function to fetch YouTube videos based on a query
 function fetchYouTubeVideos() {
-  var query = "Software Quality Assurance";
+  var query = document.getElementById("search").value; //change this with the search value from homepage
   const maxResults = 12;
   const apiUrl =
     "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&order=viewCount&q=Software%20Quality%20Assurance&key=AIzaSyAZZGG2MbLClM6RHdahrZCgX3nX8nTtN1Q";
+
   fetch(apiUrl)
     .then((response) => response.json())
     .then((data) => {

@@ -4,11 +4,6 @@
         <title>YouTube API</title>
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
-		<script type = "text/javascript">
-			function showNote() {
-				document.getElementById('note-container').style.display = "block";
-		}
-		</script>
     </head>
     <body>
         <div class="header">
@@ -56,30 +51,19 @@
             <div class="screen-content">
                 <span class="close" onclick="closeVideo()">&times;</span>
                 <iframe id="videoFrame" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
+				<!--<div id="fb-root"></div>-->
+				<!--<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v18.0" nonce="wykFjTT7"></script>
+				<a class="twitter-share-button" href="https://twitter.com/intent/tweet?text=Hello%20world"><img src="X.png" width="60px" height="60px"></a>
+				<input type="image" style="width:60px;height:60px;" src = "2023_Facebook_icon.png" onclick="location.href='https://www.facebook.com/sharer/sharer.php?u=example.org';" id = "fb-share" /></button>
+				<input type = "image" style="width:60px;height:60px;" src = "save.png" onclick = "openNW()" id = "download" ></button>-->
 				<p><a download="info.txt" id="downloadlink">
 				<img src="save.png" alt="Download" width="60px" height="60px">
 				</a></p>
-				<input type = "image" style="width:60px;height:60px;" src = "note.png" onclick = "showNote()" id = "note-opener"></button>
-			</div>
-			
-			<div id="note-container" style = "display:none;">
-			  <h2>Video Notes</h2>
-			  <ul id="notes-list"></ul>
-			  <div style="background-color: #fff">
-				<input type="text" id="note-text" placeholder="Add note" />
-				<button id="add-note">Add Note</button>
-			  </div>
-			  <div style="background-color: #fff">
-				<select id="video-selector"></select>
-				<button id="load-video">Load Video</button>
-			  </div>
-			</div>
-			
+				
+            </div>
         </div>
-	
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        <script src="https://www.youtube.com/iframe_api"></script>
-		<script src="ytsearch.js"></script>
+        <script src="ytsearch.js"></script>
     </body>
 </html>

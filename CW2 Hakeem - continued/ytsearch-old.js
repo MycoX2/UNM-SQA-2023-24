@@ -27,6 +27,15 @@ $(document).ready(function(){
         videoSearch(API_KEY, search, 12, videoDuration);
     });
 
+	var vidContainer = document.getElementById("vid_container");
+	
+	function updateHTML(elmId, value) {
+		var elem = document.getElementById(elmId);
+		if(typeof elem !== 'undefined' && elem !== null) {
+		elem.innerHTML = value;
+  }
+}
+	
     function videoSearch(key, search, maxResults, videoDuration) {
         $("#videos").empty();
         $.get("https://www.googleapis.com/youtube/v3/search?key=" + key
@@ -37,11 +46,34 @@ $(document).ready(function(){
             data.items.forEach(function (item, index) {
                 var videoColumn = $("<div class='col-md-4'></div>");
                 var videoContainer = $("<div class='video-container'></div>");
-        
+		
                 // Create an image or link to represent the video thumbnail and trigger the pop-up
                 var thumbnail = $("<img src='" + item.snippet.thumbnails.medium.url + "' alt='Video Thumbnail'>");
                 thumbnail.on("click", function () {
-                    openVideo("https://www.youtube.com/embed/" + item.id.videoId);
+						//window.open("http://www.youtube.com/embed/" + item.id.videoId, "height=100, width=100"); opens in new page, but on a whole page. I only want half
+						vidContainer.innerHTML =
+						`<iframe src = "https://www.youtube.com/embed/" + item.id.videoId frameborder="0" allowfullscreen></iframe>`
+						window.open("file.html");
+						/*openVideo("https://www.youtube.com/embed/" + item.id.videoId); 
+						 
+						 (function () { share functionality
+							var textFile = null,
+							  makeTextFile = function (text) {
+								var data = new Blob([text], {type: 'text/plain'});
+
+								// If we are replacing a previously generated file we need to
+								// manually revoke the object URL to avoid memory leaks.
+								if (textFile !== null) {
+								  window.URL.revokeObjectURL(textFile);
+								}
+
+								textFile = window.URL.createObjectURL(data);
+
+								return textFile;
+							  };
+							  
+								var link = document.getElementById("downloadlink");
+								link.href = makeTextFile("https://www.youtube.com/embed/" + item.id.videoId)})();*/
                 });
         
                 var videoTitle = $("<p class='video-title'></p>");
@@ -114,8 +146,32 @@ $(document).ready(function(){
         }
     })
 	
-	function showNote() {
-	   document.getElementById('note-container').style.display = "block";
-	}
 });
 
+/*(function () {
+var textFile = null,
+  makeTextFile = function (text) {
+    var data = new Blob([text], {type: 'text/plain'});
+
+    // If we are replacing a previously generated file we need to
+    // manually revoke the object URL to avoid memory leaks.
+    if (textFile !== null) {
+      window.URL.revokeObjectURL(textFile);
+    }
+
+    textFile = window.URL.createObjectURL(data);
+
+    return textFile;
+  };
+  
+    var link = document.getElementById("downloadlink");
+    link.href = makeTextFile(yt_url)})();
+	
+function (){
+	var yt_url = videoUrl
+	var data = new Blob([yt-url], {type: 'text/plain'});
+	var url = URL.createObjectURL(data);
+	
+	var link = document.getElementById("downloadlink");
+    link.href = url;
+	}*/
