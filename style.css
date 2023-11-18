@@ -60,34 +60,6 @@
     font-weight: bold;
 }
 
-.screen {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.7);
-}
-
-.screen-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #fff;
-    padding: 20px;
-}
-
-.close {
-    position: absolute;
-    top: -12px;
-    right: 1px;
-    font-size: 28px;
-    cursor: pointer;
-}
-
 .add-button {
     width: 50px; 
     height: 50px; 
@@ -105,6 +77,10 @@
 
 .add-button:hover {
     background-color: #0055cc;
+}
+
+.notes-section {
+    margin-left: 20px;
 }
 
 

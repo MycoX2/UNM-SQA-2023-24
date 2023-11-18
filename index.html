@@ -4,6 +4,7 @@
         <title>YouTube API</title>
         <link rel="stylesheet" href="style.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+        <script src="https://www.youtube.com/iframe_api"></script>
     </head>
     <body>
         <div class="container">
@@ -44,14 +45,6 @@
         <div id="error" style="display:none">
             <p>An error occurred while fetching videos.</p>
         </div>
-
-        <div id="videoScreen" class="screen">
-            <div class="screen-content">
-                <span class="close" onclick="closeVideo()">&times;</span>
-                <iframe id="videoFrame" width="560" height="315" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-        </div>
-        
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
         <script src="ytsearch.js"></script>
