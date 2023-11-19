@@ -1,43 +1,9 @@
 const notesList = document.getElementById("notes-list");
 const noteText = document.getElementById("note-text");
 const addNoteButton = document.getElementById("add-note");
-const videoSelector = document.getElementById("video-selector");
-const loadVideoButton = document.getElementById("load-video");
 let currentVideoId = null;
 let player;
 let highlightInterval;
-
-// Function to fetch YouTube videos based on a query
-function fetchYouTubeVideos() {
-  const query = "Software Quality Assurance";
-  const maxResults = 12;
-  const apiUrl =
-    "https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=12&order=viewCount&q=Software%20Quality%20Assurance&key=AIzaSyAZZGG2MbLClM6RHdahrZCgX3nX8nTtN1Q";
-
-  fetch(apiUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      populateVideoSelector(data.items);
-    })
-    .catch((error) => {
-      console.error("Error fetching video data:", error);
-    });
-}
-
-// Function to populate the video selection dropdown with video options
-function populateVideoSelector(videoData) {
-  videoSelector.innerHTML = "";
-
-  videoData.forEach((video) => {
-    const videoId = video.id.videoId;
-    const videoTitle = video.snippet.title;
-
-    const option = document.createElement("option");
-    option.value = videoId;
-    option.text = videoTitle;
-    videoSelector.appendChild(option);
-  });
-}
 
 // Event listener for adding notes
 addNoteButton.addEventListener("click", () => {
@@ -57,15 +23,6 @@ addNoteButton.addEventListener("click", () => {
   saveNoteToLocalStorage(note);
 
   noteText.value = "";
-});
-
-// Event listener for loading a selected video
-loadVideoButton.addEventListener("click", () => {
-  const selectedVideoId = videoSelector.value;
-  if (selectedVideoId) {
-    loadYouTubeVideo(selectedVideoId);
-    loadNotesForVideo(selectedVideoId);
-  }
 });
 
 // Function to load notes for a video from local storage
@@ -96,11 +53,11 @@ function highlightNoteInList(note) {
   // Customize this function based on how you want to highlight the note
   const listItem = notesList.querySelector(`[data-note-id="${note.id}"]`);
   if (listItem) {
-    listItem.style.backgroundColor = "yellow"; // Change the background color as an example
-    listItem.scrollIntoView({ behavior: "smooth", block: "center" }); // Scroll to the highlighted note
+    listItem.style.backgroundColor = "yellow";
+    listItem.scrollIntoView({ behavior: "smooth", block: "center" });
     setTimeout(() => {
-      listItem.style.backgroundColor = ""; // Remove the background color
-    }, 5000); // Adjust the time as needed (5 seconds in this example)
+      listItem.style.backgroundColor = "";
+    }, 5000);
   }
 }
 
@@ -114,7 +71,7 @@ function highlightNoteAtCurrentTime() {
 
   existingNotes.forEach((note) => {
     const noteStart = note.timestamp;
-    const noteEnd = note.timestamp + 5; // Assuming notes are valid for a 5-second window
+    const noteEnd = note.timestamp + 5;
 
     if (currentTimestamp >= noteStart && currentTimestamp < noteEnd) {
       // Highlight the note
@@ -239,15 +196,31 @@ function addUniqueIdToNote(note) {
 function padNumber(number) {
   return number < 10 ? `0${number}` : number;
 }
-
+// Function to initialize the YouTube player
+function initYouTubePlayer() {
+  if (!player) {
+    player = new YT.Player("player", {
+      height: "315",
+      width: "560",
+      playerVars: {
+        controls: 1,
+      },
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange,
+      },
+    });
+  }
+}
 // Function to load a YouTube video
 function loadYouTubeVideo(videoId) {
-  if (player) {
-    player.loadVideoById(videoId);
-    currentVideoId = videoId;
-    player.removeEventListener("onStateChange", onPlayerStateChange);
-    player.addEventListener("onStateChange", onPlayerStateChange);
+  if (!player) {
+    initYouTubePlayer();
   }
+
+  player.loadVideoById(videoId);
+  currentVideoId = videoId;
+  localStorage.setItem("selectedVideoId", videoId);
 }
 
 // Function called when the YouTube IFrame API is ready
@@ -267,7 +240,11 @@ function onYouTubeIframeAPIReady() {
 // Function called when the YouTube player is ready
 function onPlayerReady(event) {
   addNoteButton.disabled = false;
-  fetchYouTubeVideos();
+  const selectedVideoId = localStorage.getItem("selectedVideoId");
+  if (selectedVideoId) {
+    loadYouTubeVideo(selectedVideoId);
+    loadNotesForVideo(selectedVideoId); // Load notes for the selected video
+  }
 }
 
 // Function called when the YouTube player state changes
@@ -278,8 +255,6 @@ function onPlayerStateChange(event) {
     event.data === YT.PlayerState.PLAYBACK_RATE_CHANGE
   ) {
     startHighlighting();
-  } else {
-    stopHighlighting();
   }
 }
 
@@ -288,7 +263,7 @@ function startHighlighting() {
   // Set up the interval to check and highlight notes
   highlightInterval = setInterval(() => {
     highlightNoteAtCurrentTime();
-  }, 2); // Check every second (adjust as needed)
+  }, 1);
 }
 
 // Function to save a note to local storage
@@ -299,11 +274,14 @@ function saveNoteToLocalStorage(note) {
   updatedNotes.push(note); // Add the updated note
   localStorage.setItem(key, JSON.stringify(updatedNotes));
 }
+// When the document is ready
+document.addEventListener("DOMContentLoaded", function () {
+  // Load the YouTube IFrame API script
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  const firstScriptTag = document.getElementsByTagName("script")[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-// Event listener for loading a selected video
-loadVideoButton.addEventListener("click", () => {
-  const selectedVideoId = videoSelector.value;
-  if (selectedVideoId) {
-    loadYouTubeVideo(selectedVideoId);
-  }
+  // Initialize the YouTube player and other functionalities
+  initYouTubePlayer();
 });
