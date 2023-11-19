@@ -34,33 +34,13 @@ $(document).ready(function(){
 		tag.src = "https://www.youtube.com/iframe_api";
 		var firstScriptTag = document.getElementsByTagName('script')[0];
 		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-		
-		//initialize player
-		window.player;
-		
-		//create player function
-		window.onYouTubeIframeAPIReady = function() {
-			player = new YT.Player('player', {
-			height: "315",
-			width: "560",
-			playerVars: {
-				'playsinline': 1
-			},
-			events: {
-				'onReady': onPlayerReady,
-				}
-			});
-		  }
-		   function onPlayerReady(event){
-			   event.target.playVideo();
-		   }
 		   
         $("#videos").empty();
         $.get("https://www.googleapis.com/youtube/v3/search?key=" + key
         + "&type=video&part=snippet&maxResults=" + maxResults + "&q=" + search + "&videoDuration=" + videoDuration, 
 		
         function(data){
-			populateVideoSelector(data.items);
+			//populateVideoSelector(data.items);
             var videosContainer = $("<div class='row'></div>");
             console.log(data);
             data.items.forEach(function (item, index) {
@@ -70,11 +50,32 @@ $(document).ready(function(){
                 // Create an image or link to represent the video thumbnail and trigger the pop-up
                 var thumbnail = $("<img src='" + item.snippet.thumbnails.medium.url + "' alt='Video Thumbnail'>");
                 thumbnail.on("click", function () {
-						
-						player.loadVideoById({
-							videoId: item.id.videoId
-						});
-						//openVideo("https://www.youtube.com/embed/" + item.id.videoId +"?enablejsapi=1"); 
+							//initialize player
+							window.player;
+							
+							//create player function
+							window.onYouTubeIframeAPIReady = function() {
+								player = new YT.Player('player', {
+								height: "315",
+								width: "560",
+								playerVars: {
+									'playsinline': 1
+								},
+								events: {
+									'onReady': onPlayerReady,
+									}
+								});
+								 player.loadVideoById(item.id.videoId);
+							  }
+							  
+							   function onPlayerReady(player){
+								   videoScreen.style.display = "block"
+								   player.playVideo();
+							   }
+							//load videoId
+							onPlayerReady();
+							
+							//openVideo("https://www.youtube.com/embed/" + item.id.videoId +"?enablejsapi=1"); 
 						 
 						 (function () {
 							var textFile = null,
@@ -169,7 +170,7 @@ $(document).ready(function(){
     })
 	
 	//note-taking functionality
-	const notesList = document.getElementById("notes-list");
+/*	const notesList = document.getElementById("notes-list");
 	const noteText = document.getElementById("note-text");
 	const addNoteButton = document.getElementById("add-note");
 	const videoSelector = document.getElementById("video-selector");
@@ -391,7 +392,7 @@ $(document).ready(function(){
 	// Function to pad a number with leading zeros
 	function padNumber(number) {
 	  return number < 10 ? `0${number}` : number;
-	}
+	}*/
 
 });
 

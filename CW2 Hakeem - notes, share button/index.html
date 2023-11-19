@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>YouTube API</title>
+        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap/dist/css/bootstrap.min.css">
+        <script src="https://www.youtube.com/iframe_api"></script>
+    </head>
+    <body>
+        <div class="container">
+            <br>
+            <h1>YouTube API Search</h1>
+        
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="Search for videos">
+                <button id="search-button">Search</button>
+                <button id="addKeywordButton" class="add-button">+</button>
+            </div>
+
+            <div id="keywordPopup" class="popup" style="display: none;">
+                <br>
+                <input type="text" id="customKeyword" placeholder="Enter custom keyword">
+                <button id="submitKeyword">Submit</button>
+                <button id="clearAllKeywords">Clear All</button>
+                <button id="cancelKeyword">Cancel</button>
+            </div>
+        
+            <div class="category-buttons">
+                <button class="category-button" data-category="Software Quality Assurance">Software Quality Assurance</button>
+                <button class="category-button" data-category="Computing">Computing</button>
+            </div>
+        
+            <br>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="videos"></div>
+                </div>
+            </div>
+        </div>
+       
+        <div id="loading" style="display: none">
+            <p>Loading...</p>
+        </div>
+
+        <div id="error" style="display:none">
+            <p>An error occurred while fetching videos.</p>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="ytsearch.js"></script>
+    </body>
+</html>
