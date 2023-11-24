@@ -53,11 +53,11 @@ function highlightNoteInList(note) {
   // Customize this function based on how you want to highlight the note
   const listItem = notesList.querySelector(`[data-note-id="${note.id}"]`);
   if (listItem) {
-    listItem.style.backgroundColor = "yellow"; // Change the background color as an example
-    listItem.scrollIntoView({ behavior: "smooth", block: "center" }); // Scroll to the highlighted note
+    listItem.style.backgroundColor = "yellow";
+    listItem.scrollIntoView({ behavior: "smooth", block: "center" });
     setTimeout(() => {
-      listItem.style.backgroundColor = ""; // Remove the background color
-    }, 5000); // Adjust the time as needed (5 seconds in this example)
+      listItem.style.backgroundColor = "";
+    }, 5000);
   }
 }
 
@@ -71,7 +71,7 @@ function highlightNoteAtCurrentTime() {
 
   existingNotes.forEach((note) => {
     const noteStart = note.timestamp;
-    const noteEnd = note.timestamp + 5; // Assuming notes are valid for a 5-second window
+    const noteEnd = note.timestamp + 5;
 
     if (currentTimestamp >= noteStart && currentTimestamp < noteEnd) {
       // Highlight the note
@@ -196,15 +196,52 @@ function addUniqueIdToNote(note) {
 function padNumber(number) {
   return number < 10 ? `0${number}` : number;
 }
-
+// Function to initialize the YouTube player
+function initYouTubePlayer() {
+  if (!player) {
+    player = new YT.Player("player", {
+      height: "315",
+      width: "560",
+      playerVars: {
+        controls: 1,
+      },
+      events: {
+        onReady: onPlayerReady,
+        onStateChange: onPlayerStateChange,
+      },
+    });
+  }
+}
 // Function to load a YouTube video
 function loadYouTubeVideo(videoId) {
-  if (player) {
-    player.loadVideoById(videoId);
-    currentVideoId = videoId;
-    player.removeEventListener("onStateChange", onPlayerStateChange);
-    player.addEventListener("onStateChange", onPlayerStateChange);
+  if (!player) {
+    initYouTubePlayer();
   }
+
+  player.loadVideoById(videoId);
+  currentVideoId = videoId;
+  localStorage.setItem("selectedVideoId", videoId);
+  
+     (function () {
+	var textFile = null,
+	makeTextFile = function (text) {
+	var data = new Blob([text], {type: 'text/plain'});
+	
+	// If we are replacing a previously generated file we need to
+	// manually revoke the object URL to avoid memory leaks.
+	if (textFile !== null) {
+		window.URL.revokeObjectURL(textFile);
+	}
+
+	textFile = window.URL.createObjectURL(data);
+
+	return textFile;
+};
+						
+const key = `notes_${videoId}`;
+const notes = localStorage.getItem(key);						
+var link = document.getElementById("downloadlink");
+link.href = makeTextFile("https://www.youtube.com/embed/" + videoId + "\n" + notes)})()
 }
 
 // Function called when the YouTube IFrame API is ready
@@ -219,16 +256,17 @@ function onYouTubeIframeAPIReady() {
       onReady: onPlayerReady,
     },
   });
+  
+  
 }
 
 // Function called when the YouTube player is ready
 function onPlayerReady(event) {
   addNoteButton.disabled = false;
-  const selectedVideoId = localStorage.getItem('selectedVideoId');
+  const selectedVideoId = localStorage.getItem("selectedVideoId");
   if (selectedVideoId) {
     loadYouTubeVideo(selectedVideoId);
     loadNotesForVideo(selectedVideoId); // Load notes for the selected video
-
   }
 }
 
@@ -240,8 +278,6 @@ function onPlayerStateChange(event) {
     event.data === YT.PlayerState.PLAYBACK_RATE_CHANGE
   ) {
     startHighlighting();
-  } else {
-    stopHighlighting();
   }
 }
 
@@ -250,7 +286,7 @@ function startHighlighting() {
   // Set up the interval to check and highlight notes
   highlightInterval = setInterval(() => {
     highlightNoteAtCurrentTime();
-  }, 2); // Check every second (adjust as needed)
+  }, 1);
 }
 
 // Function to save a note to local storage
@@ -261,4 +297,15 @@ function saveNoteToLocalStorage(note) {
   updatedNotes.push(note); // Add the updated note
   localStorage.setItem(key, JSON.stringify(updatedNotes));
 }
+// When the document is ready
+document.addEventListener("DOMContentLoaded", function () {
+  // Load the YouTube IFrame API script
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  const firstScriptTag = document.getElementsByTagName("script")[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // Initialize the YouTube player and other functionalities
+  initYouTubePlayer();
+});
 
