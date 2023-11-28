@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Youtube</title>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <link rel="stylesheet" href="videoPlayer.css" />
+  </head>
+  <body>
+    <div class="video-container">
+      <div id="player"></div>
+    </div>
+    <div class="note-container">
+      <h2>Video Notes</h2>
+      <ul id="notes-list"></ul>
+      <div>
+        <input type="text" id="note-text" placeholder="Add note" />
+        <button id="add-note">Add Note</button>
+		<p><a download="info.txt" id="downloadlink">
+		<img src="save.png" alt="Download" width="60px" height="60px">
+		</a></p>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
