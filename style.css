@@ -83,4 +83,10 @@
     margin-left: 20px;
 }
 
+.header-container {
+    display: flex;
+    align-items: center;
+}
+
+
 

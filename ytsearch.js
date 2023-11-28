@@ -1,7 +1,15 @@
 $(document).ready(function(){
     var API_KEY = "AIzaSyAYUJirQE2io-hjqAce9IJCQw9D-F6aFNk";
+    // var API_KEY = "AIzaSyASw0iFX4bRcwz10Lmm12CdTgxF-NLzve4"; 
+
     var selectedCategories = new Set();
-    
+    // Determine whether to use the stored query or default query
+    var defaultQuery = "Software Quality Assurance";
+        
+    // Fetch and display search results with the determined query
+    videoSearch(API_KEY, defaultQuery, 12, "short");
+
+
     // Function to handle category button click
     function handleCategoryClick() {
         var categoryKeyword = $(this).data("category");
@@ -42,6 +50,7 @@ $(document).ready(function(){
     $("#search-button").click(function () {
         var search = $("#search").val();
         var videoDuration = "short";
+
         videoSearch(API_KEY, search, 12, videoDuration);
     });
 
@@ -85,7 +94,7 @@ $(document).ready(function(){
         $searchInput.val(combinedCategories);
     }
     
-    // Function to clear all self added keywords
+    // Function to clear all self-added keywords
     $("#clearAllKeywords").click(function () {
         localStorage.removeItem("customKeywords");
         $(".custom-category-button").remove(); // Remove custom buttons from the DOM
@@ -109,11 +118,9 @@ $(document).ready(function(){
     
                     var thumbnail = $("<img src='" + item.snippet.thumbnails.medium.url + "' alt='Video Thumbnail'>");
                     thumbnail.on("click", function () {
-                        var videoId = item.id.videoId
-                                               
+                        var videoId = item.id.videoId;
                         localStorage.setItem('selectedVideoId', videoId);
                         window.location.href = 'videoPlayer.html';
-                        $("#search").val("");
                     });
     
                     var videoTitle = $("<p class='video-title'></p>");
