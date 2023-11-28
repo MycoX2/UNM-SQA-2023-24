@@ -239,9 +239,15 @@ function loadYouTubeVideo(videoId) {
 };
 						
 const key = `notes_${videoId}`;
-const notes = localStorage.getItem(key);						
+var notes = localStorage.getItem(key);
+setInterval(updateNotes(key, notes), 10);
 var link = document.getElementById("downloadlink");
 link.href = makeTextFile("https://www.youtube.com/embed/" + videoId + "\n" + notes)})()
+}
+
+function updateNotes(key, notes) {
+  var updatedNotes = localStorage.getItem(key);
+  localStorage.setItem(key, updatedNotes);
 }
 
 // Function called when the YouTube IFrame API is ready
