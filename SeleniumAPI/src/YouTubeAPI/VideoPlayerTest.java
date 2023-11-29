@@ -1,4 +1,5 @@
 package YouTubeAPI;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,6 +9,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 import static org.junit.Assert.*;
+
 public class VideoPlayerTest {
     private WebDriver driver;
 
@@ -20,26 +22,38 @@ public class VideoPlayerTest {
     }
 
     @Test
-    public void testVideoPlayerFunctionality () throws InterruptedException {
+    public void testVideoPlayerFunctionality() throws InterruptedException {
         // Find a video thumbnail
         WebElement thumbnailElement = driver.findElement(By.cssSelector("#videos .video-container img"));
-
-        // Get the current URL before clicking the thumbnail
-        String initialUrl = driver.getCurrentUrl();
 
         // Simulate a click on the thumbnail
         thumbnailElement.click();
 
-        // Wait for the navigation to the video player page (adjust the time as needed)
+        // Wait for the video player to load (adjust the time as needed)
         Thread.sleep(5000);
 
-        // Get the current URL after clicking the thumbnail
-        String currentUrl = driver.getCurrentUrl();
+        // Find the YouTube player iframe
+        WebElement iframeElement = driver.findElement(By.tagName("iframe"));
+        driver.switchTo().frame(iframeElement);
 
-        // Check if the browser navigated to the expected page
-        assertNotEquals("The video player page did not open", initialUrl, currentUrl);
-        assertTrue("The current URL does not contain 'videoPlayer.html'", currentUrl.contains("videoPlayer.html"));
+        // Find the play button and click it
+        WebElement playButton = driver.findElement(By.cssSelector(".ytp-large-play-button"));
+        playButton.click();
 
+        // Wait for the player to start playing (adjust the time as needed)
+        Thread.sleep(10000);
+
+        // Check if the player is in the "PLAYING" state
+        assertTrue(isPlayerPlaying());
+
+        // Switch back to the default content
+        driver.switchTo().defaultContent();
+    }
+
+    private boolean isPlayerPlaying() {
+        // Check if the player is in the "PLAYING" state
+        String playButtonLabel = driver.findElement(By.cssSelector(".ytp-play-button")).getAttribute("aria-label");
+        return playButtonLabel.equals("Pause keyboard shortcut k");
     }
 
     @After
