@@ -16,6 +16,7 @@ public class VideoTitleTest {
     @Before
     public void setUp() throws InterruptedException {
         driver = new ChromeDriver();
+        //change file path to where index.html is downloaded
         driver.get("C:\\Users\\loh27\\Documents\\Year3\\Software Quality Assurance\\UNM-SQA-2023-24\\index.html");
         driver.manage().window().maximize();
         Thread.sleep(5000);

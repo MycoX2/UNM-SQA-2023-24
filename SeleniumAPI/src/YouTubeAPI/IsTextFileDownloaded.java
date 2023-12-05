@@ -1,4 +1,4 @@
-package org.example;
+package YouTubeAPI;
 
 import org.junit.*;
 import org.openqa.selenium.By;
@@ -17,6 +17,7 @@ public class IsTextFileDownloaded {
     public void setUp() throws InterruptedException {
 
         WebDriver driver = new ChromeDriver();
+        //change file path to where index.html is downloaded
         driver.get("file:///C:/Users/hakee/Downloads/UNM-SQA-2023-24-main/UNM-SQA-2023-24-main/index.html");
 
         // Wait for the page to load
@@ -60,6 +61,7 @@ public class IsTextFileDownloaded {
     @Test
     public void CheckTextDownloaded(){
             IsFileDownloadedMethod fileCheck = new IsFileDownloadedMethod();
+        //change path "downloadpath" to where index.html is downloaded. fileName should be info.txt.
             Assert.assertTrue(fileCheck.isFileDownloaded("C:/Users/hakee/Downloads", "info.txt"));
         }
 

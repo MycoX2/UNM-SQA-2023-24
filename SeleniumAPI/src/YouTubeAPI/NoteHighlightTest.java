@@ -1,4 +1,4 @@
-package org.example;
+package YouTubeAPI;
 
 import org.junit.*;
 import org.openqa.selenium.By;
@@ -16,6 +16,7 @@ public class NoteHighlightTest {
     @Test
     public void IsListItemYellow(){
         WebDriver driver = new ChromeDriver();
+        //change file path to where index.html is downloaded
         driver.get("file:///C:/Users/hakee/Downloads/UNM-SQA-2023-24-main/UNM-SQA-2023-24-main/index.html");
 
         // Wait for the page to load

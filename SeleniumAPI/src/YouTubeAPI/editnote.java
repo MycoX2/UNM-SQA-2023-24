@@ -20,6 +20,7 @@ public class editnote {
 
         WebDriver driver = new ChromeDriver(chromeOptions);
 
+        //change file path to where index.html is downloaded
         driver.get("file:///C:\\Users\\Yue\\Downloads\\UNM-SQA-2023-24-main\\UNM-SQA-2023-24-main\\index.html");
         WebElement SQAButton = driver.findElement(By.className("category-button"));
         SQAButton.click();
