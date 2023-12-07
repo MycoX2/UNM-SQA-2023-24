@@ -1,7 +1,6 @@
 package YouTubeAPI;
-import java.time.Duration;
-import java.util.List;
 
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,9 +9,15 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+import java.util.List;
+
 public class createnote {
 
-    public static void main(String[] args) {
+    private WebDriver driver;
+    @Test
+    public void IsNoteCreated(){
+
         System.setProperty("webdriver.chrome.driver", "C:\\selenium webdriver\\chromedriver\\chromedriver-win64 (3)\\chromedriver-win64\\chromedriver.exe");
 
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -20,7 +25,7 @@ public class createnote {
 
         WebDriver driver = new ChromeDriver(chromeOptions);
 
-        //change file path to where index.html is downloaded
+
         driver.get("file:///C:\\Users\\Yue\\Downloads\\UNM-SQA-2023-24-main\\UNM-SQA-2023-24-main\\index.html");
         WebElement SQAButton = driver.findElement(By.className("category-button"));
         SQAButton.click();
@@ -69,7 +74,12 @@ public class createnote {
         if (!noteFound) {
             System.out.println("Note content not found in the displayed notes.");
         }
+    }
 
-        driver.quit();
+    @After
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
