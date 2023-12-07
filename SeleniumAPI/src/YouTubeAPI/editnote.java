@@ -1,7 +1,6 @@
-package bmt;
-import java.time.Duration;
-import java.util.List;
+package YouTubeAPI;
 
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,9 +9,15 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+import java.util.List;
+
 public class editnote {
 
-    public static void main(String[] args) {
+    private WebDriver driver;
+    @Test
+    public void IsNoteEdited(){
+
         System.setProperty("webdriver.chrome.driver", "C:\\selenium webdriver\\chromedriver\\chromedriver-win64 (3)\\chromedriver-win64\\chromedriver.exe");
 
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -57,45 +62,49 @@ public class editnote {
         String expectedNoteContent = "This is a test note content";
 
         // Loop through each displayed note and check for a match
-for (WebElement noteElement : noteElements) {
-    String displayedNoteContent = noteElement.getAttribute("value");
-    if (displayedNoteContent.equals(expectedNoteContent)) {
-        // Clear the existing note content
-        noteElement.clear();
+        for (WebElement noteElement : noteElements) {
+            String displayedNoteContent = noteElement.getAttribute("value");
+            if (displayedNoteContent.equals(expectedNoteContent)) {
+                // Clear the existing note content
+                noteElement.clear();
 
-        // Enter new note content
-        noteElement.sendKeys("New note content");
+                // Enter new note content
+                noteElement.sendKeys("New note content");
 
-        
 
-        noteFound = true;
-        
-        // Additional check: Verify the note content after editing
-        List<WebElement> updatedNoteElements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//ul[@id='notes-list']/li//textarea")));
-        boolean noteEdited = false;
-        for (WebElement updatedNoteElement : updatedNoteElements) {
-            String updatedNoteContent = updatedNoteElement.getAttribute("value");
-            if (updatedNoteContent.equals("New note content")) {
-                noteEdited = true;
+
+                noteFound = true;
+
+                // Additional check: Verify the note content after editing
+                List<WebElement> updatedNoteElements = wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//ul[@id='notes-list']/li//textarea")));
+                boolean noteEdited = false;
+                for (WebElement updatedNoteElement : updatedNoteElements) {
+                    String updatedNoteContent = updatedNoteElement.getAttribute("value");
+                    if (updatedNoteContent.equals("New note content")) {
+                        noteEdited = true;
+                        break;
+                    }
+                }
+
+                if (noteEdited) {
+                    System.out.println("Note content edited successfully.");
+                } else {
+                    System.out.println("Failed to edit note content.");
+                }
+
                 break;
             }
         }
-        
-        if (noteEdited) {
-            System.out.println("Note content edited successfully.");
-        } else {
-            System.out.println("Failed to edit note content.");
+
+        if (!noteFound) {
+            System.out.println("Note content not found in the displayed notes.");
         }
-        
-        break;
     }
-}
 
-if (!noteFound) {
-    System.out.println("Note content not found in the displayed notes.");
-}
-
-
-        driver.quit();
+    @After
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
