@@ -1,6 +1,9 @@
 const notesList = document.getElementById("notes-list");
 const noteText = document.getElementById("note-text");
 const addNoteButton = document.getElementById("add-note");
+
+
+document.getElementById("video-title").innerHTML = sessionStorage.getItem("selectedVideoTitle");
 let currentVideoId = null;
 let player;
 let highlightInterval;
@@ -222,6 +225,7 @@ function loadYouTubeVideo(videoId) {
   currentVideoId = videoId;
   localStorage.setItem("selectedVideoId", videoId);
   
+  
      (function () {
 	var textFile = null,
 	makeTextFile = function (text) {
@@ -256,14 +260,13 @@ function onYouTubeIframeAPIReady() {
       onReady: onPlayerReady,
     },
   });
-  
-  
 }
 
 // Function called when the YouTube player is ready
 function onPlayerReady(event) {
   addNoteButton.disabled = false;
   const selectedVideoId = localStorage.getItem("selectedVideoId");
+
   if (selectedVideoId) {
     loadYouTubeVideo(selectedVideoId);
     loadNotesForVideo(selectedVideoId); // Load notes for the selected video
@@ -308,4 +311,3 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize the YouTube player and other functionalities
   initYouTubePlayer();
 });
-

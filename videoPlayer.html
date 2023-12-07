@@ -1,25 +1,100 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Youtube</title>
     <script src="https://www.youtube.com/iframe_api"></script>
     <link rel="stylesheet" href="videoPlayer.css" />
-  </head>
-  <body>
-    <div class="video-container">
-      <div id="player"></div>
+
+</head>
+<body>
+    <div class="header">
+        <h2 style="font-family:verdana;">YouTube API Search</h2>
+        <a>Log in | Sign up</a>
     </div>
+  
+    <div class="search-bar">
+        <input type="text" id="search" placeholder="Search for videos">
+        <button id="search-button">Search</button>
+        <button id="addKeywordButton" class="add-button">+</button>
+    </div>
+
+    <div id="keywordPopup" class="popup" style="display: none;">
+        <br>
+        <input type="text" id="customKeyword" placeholder="Enter custom keyword">
+        <button id="submitKeyword">Submit</button>
+        <button id="clearAllKeywords">Clear All</button>
+        <button id="cancelKeyword">Cancel</button>
+    </div>
+
+    <h3></h3>
+
+    <div class="icon-video-title">
+    <i class="fas fa-home" style="color: #3284c3;"></i>
+</div>
+
+  
+    <div class="video-container">
+        <div id="player-container">
+        <div id="player"> </div>
     <div class="note-container">
-      <h2>Video Notes</h2>
-      <ul id="notes-list"></ul>
-      <div>
-        <input type="text" id="note-text" placeholder="Add note" />
-        <button id="add-note">Add Note</button>
-		<p><a download="info.txt" id="downloadlink">
+        <h2 id="video-title" style="display: inline-block;">Titles</h2>
+        <p><a download="info.txt" id="downloadlink">
 		<img src="save.png" alt="Download" width="60px" height="60px">
 		</a></p>
-      </div>
+
+        <ul id="notes-list"></ul>
+        <div>
+            <input type="text" id="note-text" placeholder="Add note..." />
+            <button id="add-note">Note</button>
+        </div>
     </div>
+    </div>
+        <div class="recommended-videos">
+            <h2>Recommended Videos</h2>
+
+            <!-- Video Section 1 -->
+           <div class="video-section">
+        <h4>What is Cloud Computing?</h4>
+        <div class="video-wrapper">
+            <iframe width="100%" height="180" src="https://www.youtube.com/embed/pidVLkQQom8" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+                   <!-- Video Section 2 -->
+           <div class="video-section">
+        <h4>Cloud Services Explained - tutorial for beginners</h4>
+        <div class="video-wrapper">
+            <iframe width="100%" height="200" src="https://www.youtube.com/embed/1ERdeg8Sfv4" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+
+           <!-- Video Section 3 -->
+           <div class="video-section">
+            <h4>Quality Assurance in Agile Software</h4>
+            <div class="video-wrapper">
+                <iframe width="100%" height="200" src="https://www.youtube.com/embed/XhFVtuNDAoM" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </div>
+
+              <!-- Video Section 4 -->
+              <div class="video-section">
+                <h4>AWS Architecture Diagramming For Beginners | How to Draw Cloud Architecture Diagrams AWS</h4>
+                <div class="video-wrapper">
+                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/tSqEljKKiU0" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+
+
+            <!-- Video Section 5 -->
+            <div class="video-section">
+                <h4>Software Development Tutorial - Considerations around quality assurance</h4>
+                <div class="video-wrapper">
+                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/hMfPCdF07hA" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+
     <script src="script.js"></script>
-  </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="ytsearch.js"></script>
+</body>
 </html>

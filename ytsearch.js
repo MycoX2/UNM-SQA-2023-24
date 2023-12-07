@@ -48,11 +48,12 @@ $(document).ready(function(){
 
     // Handle search button
     $("#search-button").click(function () {
-        var search = $("#search").val();
-        var videoDuration = "short";
-
-        videoSearch(API_KEY, search, 12, videoDuration);
+        sessionStorage.setItem("search", $("#search").val());
+        sessionStorage.setItem("videoDuration" , "short");
+        sessionStorage.setItem("searchExecuted", "true");
+        window.location.href = 'index.html';
     });
+
 
     // + button function to add keyword
     $("#addKeywordButton").click(function (){
@@ -106,26 +107,33 @@ $(document).ready(function(){
 
     // search video according to input
     function videoSearch(key, search, maxResults, videoDuration) {
+        console.log("1");
         $("#videos").empty();
         $.get("https://www.googleapis.com/youtube/v3/search?key=" + key
             + "&type=video&part=snippet&maxResults=" + maxResults + "&q=" + search + "&videoDuration=" + videoDuration, 
             function(data){
                 var videosContainer = $("<div class='row'></div>");
-                console.log(data);
+                
                 data.items.forEach(function (item, index) {
                     var videoColumn = $("<div class='col-md-4'></div>");
                     var videoContainer = $("<div class='video-container'></div>");
     
                     var thumbnail = $("<img src='" + item.snippet.thumbnails.medium.url + "' alt='Video Thumbnail'>");
-                    thumbnail.on("click", function () {
-                        var videoId = item.id.videoId;
-                        localStorage.setItem('selectedVideoId', videoId);
-                        window.location.href = 'videoPlayer.html';
-                    });
-    
                     var videoTitle = $("<p class='video-title'></p>");
                     videoTitle.text(item.snippet.title);
+
+                    thumbnail.on("click", function () {
+                        var videoId = item.id.videoId                  
+                        localStorage.setItem('selectedVideoId', videoId);
+                       
+                        sessionStorage.setItem("selectedVideoTitle", item.snippet.title);
+                        window.location.href = 'videoPlayer.html';
+                        $("#search").val("");
+                    });
+                    console.log("2");
     
+                    
+                    
                     videoContainer.append(thumbnail);
                     videoContainer.append(videoTitle);
                     videoColumn.append(videoContainer);
@@ -136,10 +144,21 @@ $(document).ready(function(){
                         videosContainer = $("<div class='row'></div>");
                     }
                 });
+                console.log("3");
     
                 if (videosContainer.children().length > 0){
                     $("#videos").append(videosContainer);
                 }
             });
+            console.log("4");
     }
+if(sessionStorage.getItem("searchExecuted")){
+    console.log(sessionStorage.getItem("searchExecuted"));
+        videoSearch(API_KEY, sessionStorage.getItem("search"), 12, sessionStorage.getItem("videoDuration"));
+        document.getElementById("search").value = sessionStorage.getItem("search");
+        sessionStorage.clear();
+        console.log(sessionStorage.getItem("searchExecuted"));
+        
+    }
+    
 });

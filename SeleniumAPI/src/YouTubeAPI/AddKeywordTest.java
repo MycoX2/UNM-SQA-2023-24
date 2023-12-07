@@ -23,7 +23,7 @@ public class AddKeywordTest {
     } 
 
     @Test
-    public void testAddKeywords() throws InterruptedException {
+    public void testAddKeyword() throws InterruptedException {
     
         WebElement addKeywordButton = driver.findElement(By.id("addKeywordButton"));
         addKeywordButton.click();

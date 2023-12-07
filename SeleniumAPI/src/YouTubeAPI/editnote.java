@@ -18,15 +18,16 @@ public class editnote {
     @Test
     public void IsNoteEdited(){
 
-        System.setProperty("webdriver.chrome.driver", "C:\\selenium webdriver\\chromedriver\\chromedriver-win64 (3)\\chromedriver-win64\\chromedriver.exe");
+        // Set the path to your ChromeDriver executable, or run as is.
+        /*System.setProperty("webdriver.chrome.driver", "C:\\selenium webdriver\\chromedriver\\chromedriver-win64 (3)\\chromedriver-win64\\chromedriver.exe");
 
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.setBinary("C:\\selenium webdriver\\chrome-win64\\chrome.exe");
+        chromeOptions.setBinary("C:\\selenium webdriver\\chrome-win64\\chrome.exe");*/
 
-        WebDriver driver = new ChromeDriver(chromeOptions);
+        WebDriver driver = new ChromeDriver(); //put chromeOptions in brackets if required.
 
         //change file path to where index.html is downloaded
-        driver.get("file:///C:\\Users\\Yue\\Downloads\\UNM-SQA-2023-24-main\\UNM-SQA-2023-24-main\\index.html");
+        driver.get("file:///C:\\Users\\hakee\\OneDrive - University of Nottingham Malaysia\\Y3 CSAI\\Software Quality Assurance\\UNM-SQA-2023-24\\index.html");
         WebElement SQAButton = driver.findElement(By.className("category-button"));
         SQAButton.click();
         WebElement searchButton = driver.findElement(By.id("search-button"));

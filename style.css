@@ -88,5 +88,14 @@
     align-items: center;
 }
 
+.a {
+    color: #007bff;
+    text-decoration: underline;
+    cursor: pointer;
+    font-family: Arial;
+    margin-left: 1700px; 
+}
+
+
 
 
