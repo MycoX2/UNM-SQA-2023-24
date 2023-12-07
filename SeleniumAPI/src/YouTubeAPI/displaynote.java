@@ -1,4 +1,6 @@
-package bmt;
+package YouTubeAPI;
+
+import org.junit.*;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,7 +14,10 @@ import java.util.List;
 
 public class displaynote {
 
-    public static void main(String[] args) {
+    private WebDriver driver;
+    @Test
+    public void IsNotedisplayed(){
+
         // Set the path to your ChromeDriver executable
         System.setProperty("webdriver.chrome.driver", "C:\\selenium webdriver\\chromedriver\\chromedriver-win64 (3)\\chromedriver-win64\\chromedriver.exe");
 
@@ -75,6 +80,15 @@ public class displaynote {
         int numberOfNotes = noteElements.size();
         System.out.println("Test Successfully passed!Number of notes displayed: " + numberOfNotes);
 
-        
+
+    }
+
+
+
+    @After
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
+        }
     }
 }
